@@ -1,61 +1,53 @@
-<!-- Font Awesome -->
-<link
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-  rel="stylesheet"
-/>
-<!-- Google Fonts -->
-<link
-  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-  rel="stylesheet"
-/>
-<!-- MDB -->
-<link
-  href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.css"
-  rel="stylesheet"
-/>
-<!-- MDB -->
-
-<section style="background-color: #eee;">
-    <div class="text-center container py-5">
-      <h4 class="mt-4 mb-5"><strong>Bestsellers</strong></h4>
-  
-      <div class="row">
-      <% products.forEach(product => { %>
-        <div class="col-lg-4 col-md-6 mb-4">
-          <div class="card">
-            <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
-              data-mdb-ripple-color="light">
-              <img src="<%= product.image_url %>"
-                class="w-100" />
-              <a href="#!">
-                <div class="mask">
-                  <div class="d-flex justify-content-start align-items-end h-100">
-                    <h5><span class="badge bg-success ms-2">Eco</span></h5>
-                  </div>
-                </div>
-                <div class="hover-overlay">
-                  <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
-                </div>
-              </a>
-            </div>
-            <div class="card-body">
-              <a href="" class="text-reset">
-                <h5 class="card-title mb-3"><%= product.name %></h5>
-              </a>
-              <a href="" class="text-reset">
-                <p><%= product.application %></p>
-              </a>
-              <h6 class="mb-3">$<%= product.price %></h6>
-            </div>
-          </div>
+<link href="/css/style.css" rel="stylesheet" />
+<link href="/css/bootstrap.min.css" rel="stylesheet" />
+<link href="/css/tiny-slider.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<%- include('navigation.ejs') %>
+<% var message;
+if (message) { %>
+  <div class="alert alert-primary" role="alert">
+    <%= message %>
+  </div>
+<% } %>
+<!-- Start Hero Section -->
+<div class="hero">
+  <div class="container">
+    <div class="row justify-content-between">
+      <div class="col-lg-5">
+        <div class="intro-excerpt">
+          <h1>Shop</h1>
         </div>
-        <% }); %>
+      </div>
+      <div class="col-lg-7">
+
       </div>
     </div>
-  </section>
+  </div>
+</div>
+<!-- End Hero Section -->
 
-  <script
-  type="text/javascript"
-  src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.umd.min.js"
-></script>
-  
+<div class="untree_co-section product-section before-footer-section">
+  <div class="container">
+    <div class="row">
+      <% products.forEach(product => { %>
+      <!-- Start Column 1 -->
+      <div class="col-12 col-md-4 col-lg-3 mb-5">
+        <a class="product-item" href="/product-details/<%= product.id %>">
+          <img src="<%= product.image_url %>" class="img-fluid product-thumbnail" />
+          <h3 class="product-title"><%= product.name %></h3>
+          <strong class="product-price">₹<%= product.price %></strong>
+
+          <span class="icon-cross">
+            <img src="img/cross.svg" class="img-fluid">
+          </span>
+        </a>
+      </div>
+        <% }); %>
+    </div>
+  </div>
+</div>
+
+<%- include('footer.ejs') %>
+<script src="/js/bootstrap.bundle.min.js"></script>
+<script src="/js/tiny-slider.js"></script>
+<script src="/js/custom.js"></script>

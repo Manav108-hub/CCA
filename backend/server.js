@@ -134,6 +134,18 @@ app.get('/products', (req, res) => {
   });
 });
 
+//Get the product by the product id
+app.get('/product-details/:productId', (req, res) => {
+    const productId = req.params.productId;
+    pool.query('SELECT * FROM products WHERE id = ?', [productId], (error, results, fields) => {
+        if (error) {
+            console.error('Error querying database: ' + error.stack);
+            res.status(500).send('Internal Server Error');
+            return;
+        }
+        res.render('shopre', { product: results[0] });
+    });
+});
 
 // Endpoint to create user table
 app.get('/user-table', (req, res) => {
