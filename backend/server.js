@@ -35,7 +35,8 @@ const pool = mysql.createPool({
 // Function to create users table
 function createUsersTable() {
     // Read the contents of user.sql file
-    fs.readFile('/database/user.sql', 'utf8', (err, data) => {
+    const sqlFilePath = path.join(__dirname, 'database', 'user.sql');
+    fs.readFile(sqlFilePath, 'utf8', (err, data) => {
         if (err) {
             console.error('Error reading user.sql:', err);
             return;
@@ -55,6 +56,30 @@ function createUsersTable() {
 // Call the function to create users table when the application starts
 createUsersTable();
 
+// Function to create users table
+function createProductTable() {
+    // Read the contents of user.sql file
+    const sqlFilePathProd = path.join(__dirname, 'database', 'product.sql');
+    fs.readFile(sqlFilePathProd, 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading product.sql:', err);
+            return;
+        }
+
+        // Execute the SQL commands to create the table
+        pool.query(data, (err, results) => {
+            if (err) {
+                console.error('Error creating product table:', err);
+                return;
+            }
+            console.log('Product table created successfully');
+        });
+    });
+}
+
+// Call the function to create users table when the application starts
+createProductTable();
+
 
 app.use('/', require('./routes/pages'));
 app.use('/auth', require('./routes/auth'));
@@ -64,8 +89,54 @@ app.get('/shop', (req, res) => {
 app.get('/shopre', (req, res) => {
     res.render('shopre');
 })
+
+app.post('/products', (req, res) => {
+  // Extract data from the request body
+  const { product_id, name, brand, application, model_no, dimensions, capacity, material, no_of_hydraulic_cylinder, price, image_url } = req.body;
+
+  // Create a new product object
+  const newProduct = {
+    product_id,
+    name,
+    brand,
+    application,
+    model_no,
+    dimensions,
+    capacity,
+    material,
+    no_of_hydraulic_cylinder,
+    price,
+    image_url
+  };
+
+  // Insert the new product into the database
+  pool.query('INSERT INTO products SET ?', newProduct, (error, results) => {
+    if (error) {
+      console.error('Error inserting product:', error);
+      return res.status(500).json({ error: 'Failed to create product' });
+    }
+    console.log('Product created successfully');
+    res.status(201).json({ message: 'Product created successfully', productId: results.insertId });
+  });
+});
+
+// Define route to fetch and display products
+app.get('/products', (req, res) => {
+  // Query products from database
+  pool.query('SELECT * FROM products', (error, results, fields) => {
+    if (error) {
+      console.error('Error querying database: ' + error.stack);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+    // Render product.ejs template with product data
+    res.render('shop', { products: results });
+  });
+});
+
+
 // Endpoint to create user table
-app.get('/user', (req, res) => {
+app.get('/user-table', (req, res) => {
   // Read the SQL file
   fs.readFile(path.join(__dirname, '/database/user.sql'), 'utf8', (err, data) => {
     if (err) {
@@ -79,6 +150,25 @@ app.get('/user', (req, res) => {
         return res.status(500).json({ error: 'Internal Server Error' });
       }
       res.json({ message: 'User table created successfully' });
+    });
+  });
+});
+
+// Endpoint to create user table
+app.get('/product-table', (req, res) => {
+  // Read the SQL file
+  fs.readFile(path.join(__dirname, '/database/product.sql'), 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading SQL file:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+    // Execute the SQL query
+    pool.query(data, (err, results) => {
+      if (err) {
+        console.error('Error executing SQL query:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
+      }
+      res.json({ message: 'Product table created successfully' });
     });
   });
 });
@@ -133,16 +223,6 @@ app.get('/api/v1/backup-db', (req, res) => {
         return res.status(500).json({ error: 'Internal Server Error' });
     });
 });
-
-
-app.post('/api/v1/login', (req, res) => {
-    // Authenticate User
-    const username = req.body.username
-    const user = {name: username}
-
-    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
-    res.json({ accessToken: accessToken })
-})
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
