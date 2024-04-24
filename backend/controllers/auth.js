@@ -5,10 +5,10 @@ const bcrypt = require('bcryptjs');
 
 //Connect MySQL
 const pool = mysql.createPool({
-    host: 'mysql',
-    user: 'root',
-    password: 'password',
-    database: 'ganjababydb',
+    host: 'kiradatabase.cfsea6sqoxj1.us-east-1.rds.amazonaws.com',
+    user: 'admin',
+    password: 'Kira2101',
+    database: 'mahalaxmi',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0

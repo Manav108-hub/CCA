@@ -23,62 +23,62 @@ app.use(express.json());
 
 //Connect MySQL
 const pool = mysql.createPool({
-    host: 'mysql',
-    user: 'root',
-    password: 'password',
-    database: 'ganjababydb',
+    host: 'kiradatabase.cfsea6sqoxj1.us-east-1.rds.amazonaws.com',
+    user: 'admin',
+    password: 'Kira2101',
+    database: 'mahalaxmi',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
 });
 
 // Function to create users table
-function createUsersTable() {
-    // Read the contents of user.sql file
-    const sqlFilePath = path.join(__dirname, 'database', 'user.sql');
-    fs.readFile(sqlFilePath, 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error reading user.sql:', err);
-            return;
-        }
+// function createUsersTable() {
+//     // Read the contents of user.sql file
+//     const sqlFilePath = path.join(__dirname, 'database', 'user.sql');
+//     fs.readFile(sqlFilePath, 'utf8', (err, data) => {
+//         if (err) {
+//             console.error('Error reading user.sql:', err);
+//             return;
+//         }
 
-        // Execute the SQL commands to create the table
-        pool.query(data, (err, results) => {
-            if (err) {
-                console.error('Error creating users table:', err);
-                return;
-            }
-            console.log('Users table created successfully');
-        });
-    });
-}
+//         // Execute the SQL commands to create the table
+//         pool.query(data, (err, results) => {
+//             if (err) {
+//                 console.error('Error creating users table:', err);
+//                 return;
+//             }
+//             console.log('Users table created successfully');
+//         });
+//     });
+// }
 
-// Call the function to create users table when the application starts
-createUsersTable();
+// // Call the function to create users table when the application starts
+// createUsersTable();
 
-// Function to create users table
-function createProductTable() {
-    // Read the contents of user.sql file
-    const sqlFilePathProd = path.join(__dirname, 'database', 'product.sql');
-    fs.readFile(sqlFilePathProd, 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error reading product.sql:', err);
-            return;
-        }
+// // Function to create users table
+// function createProductTable() {
+//     // Read the contents of user.sql file
+//     const sqlFilePathProd = path.join(__dirname, 'database', 'product.sql');
+//     fs.readFile(sqlFilePathProd, 'utf8', (err, data) => {
+//         if (err) {
+//             console.error('Error reading product.sql:', err);
+//             return;
+//         }
 
-        // Execute the SQL commands to create the table
-        pool.query(data, (err, results) => {
-            if (err) {
-                console.error('Error creating product table:', err);
-                return;
-            }
-            console.log('Product table created successfully');
-        });
-    });
-}
+//         // Execute the SQL commands to create the table
+//         pool.query(data, (err, results) => {
+//             if (err) {
+//                 console.error('Error creating product table:', err);
+//                 return;
+//             }
+//             console.log('Product table created successfully');
+//         });
+//     });
+// }
 
-// Call the function to create users table when the application starts
-createProductTable();
+// // Call the function to create users table when the application starts
+// createProductTable();
 
 
 app.use('/', require('./routes/pages'));
@@ -212,10 +212,10 @@ app.get('/api/v1/backup-db', (req, res) => {
     // Generate SQL dump
     mysqldump({
         connection: {
-            host: 'mysql',
-            user: 'root',
-            password: 'password',
-            database: 'mydatabase'
+            host: 'kiradatabase.cfsea6sqoxj1.us-east-1.rds.amazonaws.com',
+            user: 'admin',
+            password: 'Kira2101',
+            database: 'mahalaxmi'
         },
         dumpToFile: dumpPath
     })

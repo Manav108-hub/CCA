@@ -1,25 +1,20 @@
-# Use a slim Node.js image for build stage
-FROM node:18-alpine AS builder
+# Use a slim Node.js image
+FROM node:20-alpine
 
 # Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json (if using)
-COPY package*.json ./
-COPY yarn.lock ./
+# Copy package.json and yarn.lock
+COPY package.json yarn.lock ./
 
-# Install dependencies
+# Install dependencies using Yarn
 RUN yarn install --production
 
-# Create a new layer for the runtime image (smaller)
-FROM node:18-alpine
-
-# Copy only the necessary files for runtime
-COPY --from=builder /app/node_modules /app/node_modules
+# Copy the rest of the application code
 COPY . .
 
-# Expose port (adjust if needed)
+# Expose port 3000
 EXPOSE 3000
 
-# Start the server (replace with your actual entry point if different)
-CMD [ "node", "server.js" ]
+# Command to run the application
+CMD ["node", "server.js"]
