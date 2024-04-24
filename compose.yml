@@ -2,16 +2,12 @@ version: '3'
 
 services:
   service:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: manav108/mahalaxmi:latest
     ports:
       - "8000:8000"
   
   nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
+    image: manav108/mahalaxmi-nginx:latest
     ports:
       - "80:80"
     depends_on:
