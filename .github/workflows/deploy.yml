@@ -1,0 +1,38 @@
+name: Deploy to Civo Instance
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build and push Docker server image
+        run: |
+          cd backend
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/mahalaxmi:latest .
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker  push ${{ secrets.DOCKER_USERNAME }}/mahalaxmi:latest
+    
+      - name: Build and push Docker nginx image
+        run: |
+          cd nginx
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/mahalaxmi-nginx:latest .
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker  push ${{ secrets.DOCKER_USERNAME }}/mahalaxmi-nginx:latest
+
+
+      - name: SSH into AWS EC2 instance and deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSh_KEY }}
+          script: |
+            sudo docker-compose -f /home/ubuntu/docker-compose/docker-compose.yml down --volumes
+            sudo docker-compose -f /home/ubuntu/docker-compose/docker-compose.yml pull
+            sudo docker-compose -f /home/ubuntu/docker-compose/docker-compose.yml up -d
